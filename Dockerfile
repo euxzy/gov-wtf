@@ -10,7 +10,7 @@ RUN bun ci --omit=dev
 
 FROM base AS build-env
 COPY . /app/
-COPY --from=development-dependencies-env /app/node_modules /app/node_modules
+COPY --from=base /app/node_modules /app/node_modules
 WORKDIR /app
 RUN bun run build
 
