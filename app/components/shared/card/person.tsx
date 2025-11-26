@@ -9,11 +9,13 @@ export const PersonCard = ({ name, photo }: PersonCardProps) => {
   return (
     <div className="border p-2 rounded-md md:p-4">
       <div className="mb-3 relative">
-        <img
-          src={photo || 'https://placehold.co/400'}
-          alt="CN"
-          className="relative aspect-4/5 object-cover mb-3 rounded-sm lg:aspect-7/8"
-        />
+        <div className="relative aspect-4/5 mb-3 rounded-sm overflow-hidden lg:aspect-7/8">
+          <img
+            src={`https://imagecdn.app/v1/images/${encodeURIComponent(photo || 'https://placehold.co/400')}`}
+            alt={name}
+            className="w-full object-cover"
+          />
+        </div>
         <div className="absolute inset-0 bg-linear-to-t from-black/80" />
 
         <div className="absolute start-3 bottom-2 flex items-center gap-2 h-4">
