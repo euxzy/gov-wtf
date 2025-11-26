@@ -1,22 +1,22 @@
-FROM oven/bun:1 AS base
+FROM oven/bun:1 AS development-dependencies-env
 COPY . /app
 WORKDIR /app
 RUN bun ci
 
-FROM base AS install
-COPY package.json bun.lock /app/
+FROM oven/bun:1 AS production-dependencies-env
+COPY ./package.json bun.lock /app/
 WORKDIR /app
 RUN bun ci --omit=dev
 
-FROM base AS build-env
+FROM oven/bun:1 AS build-env
 COPY . /app/
-COPY --from=base /app/node_modules /app/node_modules
+COPY --from=development-dependencies-env /app/node_modules /app/node_modules
 WORKDIR /app
 RUN bun run build
 
-FROM base
-COPY ./package.json bun.lock /app/
-COPY --from=install /app/node_modules /app/node_modules
+FROM oven/bun:1
+COPY ./package.json package-lock.json /app/
+COPY --from=production-dependencies-env /app/node_modules /app/node_modules
 COPY --from=build-env /app/build /app/build
 WORKDIR /app
-CMD ["bunx", "react-router-serve", "./build/server/index.js"]
+CMD ["bun", "run", "start"]
