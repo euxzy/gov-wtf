@@ -19,4 +19,4 @@ COPY ./package.json bun.lock /app/
 COPY --from=install /app/node_modules /app/node_modules
 COPY --from=build-env /app/build /app/build
 WORKDIR /app
-CMD ["bun", "run", "start"]
+CMD ["bunx", "react-router-serve", "./build/server/index.js"]
