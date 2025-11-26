@@ -2,6 +2,7 @@ import { createId } from '@paralleldrive/cuid2'
 import { relations } from 'drizzle-orm'
 import { index, integer, sqliteTable, text } from 'drizzle-orm/sqlite-core'
 
+export type Functionary = typeof functionary.$inferSelect
 export const functionary = sqliteTable('functionary', {
   id: text('id')
     .primaryKey()
@@ -17,6 +18,7 @@ export const functionary = sqliteTable('functionary', {
     .notNull(),
 })
 
+export type Rating = typeof rating.$inferSelect
 export const rating = sqliteTable(
   'rating',
   {

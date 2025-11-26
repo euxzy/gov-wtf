@@ -1,13 +1,16 @@
 import { Icon } from '@iconify/react'
 import { Rating, RatingButton } from '~/components/ui/rating'
 import { Separator } from '~/components/ui/separator'
+import type { Functionary } from '~/db/schema'
 
-export const PersonCard = () => {
+type PersonCardProps = Functionary
+
+export const PersonCard = ({ name, photo }: PersonCardProps) => {
   return (
     <div className="border p-2 rounded-md md:p-4">
       <div className="mb-3 relative">
         <img
-          src="https://github.com/shadcn.png"
+          src={photo || 'https://placehold.co/400'}
           alt="CN"
           className="relative aspect-4/5 object-cover mb-3 rounded-sm lg:aspect-7/8"
         />
@@ -26,7 +29,7 @@ export const PersonCard = () => {
       </div>
 
       <div>
-        <h2 className="font-medium line-clamp-2 mb-2 md:mb-3 md:text-lg lg:mb-4">Mulyono</h2>
+        <h2 className="font-medium line-clamp-2 mb-2 md:mb-3 md:text-lg lg:mb-4">{name}</h2>
 
         <div className="flex flex-col items-start gap-3">
           <Rating defaultValue={0}>

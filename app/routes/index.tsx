@@ -1,13 +1,25 @@
 import { SearchIcon } from 'lucide-react'
 import { PersonCard } from '~/components/shared/card/person'
 import { InputGroup, InputGroupAddon, InputGroupInput } from '~/components/ui/input-group'
+import { db } from '~/db'
+import { functionary } from '~/db/schema'
 import type { Route } from './+types'
 
 export function meta(_args: Route.MetaArgs) {
   return [{ title: 'Gov WTF' }, { name: 'description', content: 'The worst government in the world!' }]
 }
 
-export default function Home() {
+export const loader = async () => {
+  try {
+    const functionaries = (await db.select().from(functionary).limit(10)) || []
+    return { functionaries }
+  } catch (err) {
+    console.error(err)
+    return { functionaries: [] }
+  }
+}
+
+export default function Home({ loaderData }: Route.ComponentProps) {
   return (
     <section>
       <div className="max-w-7xl mx-auto py-8 px-5 md:px-8 lg:px-0">
@@ -28,8 +40,8 @@ export default function Home() {
         </div>
 
         <div className="grid gap-3 grid-cols-2 md:grid-cols-3 md:gap-4 lg:grid-cols-4">
-          {Array.from({ length: 10 }).map((_, i) => (
-            <PersonCard key={`${i + 0}`} />
+          {loaderData.functionaries.map((functionary, i) => (
+            <PersonCard key={`${i + 0}`} {...functionary} />
           ))}
         </div>
       </div>
