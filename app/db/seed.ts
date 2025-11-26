@@ -1,18 +1,16 @@
 import { db } from '.'
+import { functionaryFactory } from './factory/functionary'
 import { functionary } from './schema'
 
-const _functionaries = []
-
-export const seed = async () => {
+const main = async () => {
   try {
-    await db.insert(functionary).values([
-      {
-        name: '',
-        position: '',
-        id: '',
-      },
-    ])
+    console.log('Seeding...')
+    await db.insert(functionary).values(functionaryFactory)
+    console.log('Seeding complete')
   } catch (err) {
+    console.log('Error seeding')
     console.log(err)
   }
 }
+
+main()

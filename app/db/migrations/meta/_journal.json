@@ -15,6 +15,13 @@
       "when": 1764112754943,
       "tag": "0001_dusty_shape",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1764126970941,
+      "tag": "0002_clammy_sleepwalker",
+      "breakpoints": true
     }
   ]
 }
