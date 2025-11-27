@@ -1,5 +1,10 @@
+import { useGSAP } from '@gsap/react'
 import { like, or } from 'drizzle-orm'
+import { gsap } from 'gsap'
+import { Flip } from 'gsap/all'
+import { useRef, useState } from 'react'
 import { useSearchParams } from 'react-router'
+import { DetailPerson } from '~/components/sections/detail-person'
 import { PersonCard } from '~/components/shared/card/person'
 import {
   Pagination,
@@ -42,6 +47,8 @@ export const loader = async ({ request }: Route.LoaderArgs) => {
   }
 }
 
+gsap.registerPlugin(Flip)
+
 export default function Home({ loaderData }: Route.ComponentProps) {
   const [serachParams, setSearchParams] = useSearchParams()
 
@@ -51,6 +58,26 @@ export default function Home({ loaderData }: Route.ComponentProps) {
     serachParams.set('page', String(page))
     setSearchParams(serachParams)
   }
+
+  const detailRef = useRef<HTMLDivElement>(null)
+
+  const [_active, setActive] = useState<string | null>(null)
+
+  useGSAP((_context, contexSafe) => {
+    if (contexSafe) {
+      const onClickPerson = contexSafe((el: HTMLDivElement) => {
+        console.log(el.dataset)
+
+        setActive(el.dataset?.functionaryId || null)
+        gsap.to(detailRef.current, { visibility: 'visible' })
+      })
+
+      gsap.utils.toArray('#person').forEach((value) => {
+        const el: HTMLDivElement = value as HTMLDivElement
+        el.addEventListener('click', () => onClickPerson(el))
+      })
+    }
+  })
 
   return (
     <section>
@@ -63,10 +90,12 @@ export default function Home({ loaderData }: Route.ComponentProps) {
         </div>
 
         <div className="grid gap-3 grid-cols-2 md:grid-cols-3 md:gap-4 lg:grid-cols-4">
-          {loaderData.functionaries.map((functionary, i) => (
-            <PersonCard key={`${i + 0}`} {...functionary} />
+          {loaderData.functionaries.map((functionary) => (
+            <PersonCard key={functionary.id} id="person" functionary={functionary} />
           ))}
         </div>
+
+        <DetailPerson ref={detailRef} />
 
         <div className="py-12">
           <Pagination className="justify-end select-none">

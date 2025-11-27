@@ -3,11 +3,14 @@ import { Rating, RatingButton } from '~/components/ui/rating'
 import { Separator } from '~/components/ui/separator'
 import type { Functionary } from '~/db/schema'
 
-type PersonCardProps = Functionary
+interface PersonCardProps {
+  id?: string
+  functionary: Functionary
+}
 
-export const PersonCard = ({ name, photo }: PersonCardProps) => {
+export const PersonCard = ({ id, functionary: { name, photo, id: functionaryId } }: PersonCardProps) => {
   return (
-    <div className="border p-2 rounded-md md:p-4">
+    <div id={id} data-functionary-id={functionaryId} className="border p-2 rounded-md md:p-4">
       <div className="mb-3 relative">
         <div className="relative aspect-4/5 mb-3 rounded-sm overflow-hidden lg:aspect-7/8">
           <img
