@@ -2,31 +2,32 @@ import { Icon } from '@iconify/react'
 import { forwardRef, useState } from 'react'
 import { Rating, RatingButton } from '~/components/ui/rating'
 import { Separator } from '~/components/ui/separator'
+import type { Functionary } from '~/db/schema'
 import { Button } from '../ui/button'
 
-export const DetailPerson = forwardRef<HTMLDivElement>((_, ref) => {
+type DetailPersonProps = {
+  functionary?: Functionary | null
+  onClose?: () => void
+}
+
+export const DetailPerson = forwardRef<HTMLDivElement, DetailPersonProps>(({ functionary, onClose }, ref) => {
   const [rating, setRating] = useState(0)
 
   return (
-    <div
-      ref={ref}
-      id="detail-person"
-      className="bg-background/10 fixed inset-0 z-900 flex items-center justify-center backdrop-blur-xs invisible"
-    >
-      <div id="close" className="absolute inset-0" />
-      <div className="relative bg-background p-4 border rounded-md w-full max-w-xl grid grid-cols-2 gap-4">
-        <div className="w-full rounded-sm overflow-hidden">
-          <img
-            src="https://imagecdn.app/v1/images/https%3A%2F%2Fsetkab.go.id%2Fwp-content%2Fuploads%2F2024%2F10%2FPRABOWO-SUBIANTO.jpg"
-            alt=""
-            className="w-full aspect-4/5 object-cover"
-          />
+    <div ref={ref} className="fixed inset-0 z-900 flex items-center justify-center invisible px-5 md:px-0">
+      <div id="close" className="absolute inset-0" onClick={onClose} />
+      <div
+        id="detail-person"
+        className="relative bg-background p-4 border rounded-md w-full max-w-xl grid grid-cols-2 gap-4"
+      >
+        <div id="detail-img-container" className="w-full rounded-sm overflow-hidden aspect-4/5">
+          <img id="detail-img" alt="" className="size-full object-cover" />
         </div>
 
-        <div className="mt-2 flex flex-col justify-center h-full gap-8">
+        <div id="detail-content" className="mt-2 flex flex-col justify-center h-full gap-8 opacity-0">
           <div>
-            <h1 className="text-2xl font-semibold">Prabowo Subianto</h1>
-            <p className="text-muted-foreground text-sm">Presiden</p>
+            <h1 className="text-2xl font-semibold">{functionary?.name}</h1>
+            <p className="text-muted-foreground text-sm">{functionary?.position}</p>
           </div>
 
           <div>

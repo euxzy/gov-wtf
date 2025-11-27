@@ -2,22 +2,34 @@ import { Icon } from '@iconify/react'
 import { Rating, RatingButton } from '~/components/ui/rating'
 import { Separator } from '~/components/ui/separator'
 import type { Functionary } from '~/db/schema'
+import { cdnImg } from '~/lib/utils'
 
 interface PersonCardProps {
   id?: string
   functionary: Functionary
+  onClick?: (el: HTMLDivElement) => void
 }
 
-export const PersonCard = ({ id, functionary: { name, photo, id: functionaryId } }: PersonCardProps) => {
+export const PersonCard = ({
+  id,
+  onClick,
+  functionary: { name, photo, id: functionaryId, position, createdAt, updatedAt },
+}: PersonCardProps) => {
   return (
-    <div id={id} data-functionary-id={functionaryId} className="border p-2 rounded-md md:p-4">
+    <div
+      id={id}
+      data-functionary-id={functionaryId}
+      data-position={position}
+      data-name={name}
+      data-photo={photo}
+      data-created-at={createdAt}
+      data-updated-at={updatedAt}
+      className="border p-2 rounded-md md:p-4"
+      onClick={(e) => onClick?.(e.currentTarget)}
+    >
       <div className="mb-3 relative">
         <div className="relative aspect-4/5 mb-3 rounded-sm overflow-hidden lg:aspect-7/8">
-          <img
-            src={`https://imagecdn.app/v1/images/${encodeURIComponent(photo || 'https://placehold.co/400')}`}
-            alt={name}
-            className="w-full object-cover"
-          />
+          <img src={cdnImg(photo)} alt={name} className="w-full object-cover" />
         </div>
         <div className="absolute inset-0 bg-linear-to-t from-black/80" />
 
