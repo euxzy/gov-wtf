@@ -12,7 +12,7 @@ export const action = async ({ request }: Route.ActionArgs) => {
   const credentialId = session.get('credentialId')
 
   const formData = await request.formData()
-  const rate = Number(formData.get('rating')) || 1
+  const rateValue = Number(formData.get('rating')) || 1
   const functionaryId = String(formData.get('functionaryId'))
 
   try {
@@ -21,6 +21,7 @@ export const action = async ({ request }: Route.ActionArgs) => {
 
     if (!voterData) throw Error('Voter not found')
 
+    const rate = rateValue <= 0 ? 1 : rateValue > 5 ? 5 : rateValue
     await db
       .insert(rating)
       .values({ functionaryId, rate, voterId: credentialId })
