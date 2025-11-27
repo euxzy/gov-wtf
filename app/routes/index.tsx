@@ -57,7 +57,7 @@ export default function Home({ loaderData }: Route.ComponentProps) {
         <Persons functionaries={loaderData.functionaries} />
 
         <div className="py-12">
-          <Pagination page={loaderData.totalPage} totalPage={loaderData.totalPage} onChangePage={onChangePage} />
+          <Pagination page={loaderData.page} totalPage={loaderData.totalPage} onChangePage={onChangePage} />
         </div>
       </div>
     </section>

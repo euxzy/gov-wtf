@@ -26,6 +26,7 @@ export const rating = sqliteTable(
       .primaryKey()
       .$defaultFn(() => createId()),
     functionaryId: text('functionary_id').references(() => functionary.id),
+    voterId: text('voter_id').references(() => voter.id),
     rate: integer('rate').notNull(),
     createdAt: integer('created_at', { mode: 'timestamp' })
       .$defaultFn(() => new Date())
@@ -34,8 +35,18 @@ export const rating = sqliteTable(
       .$defaultFn(() => new Date())
       .notNull(),
   },
-  (table) => [index('idx_functionary_id').on(table.functionaryId)],
+  (table) => [index('idx_functionary_id').on(table.functionaryId), index('idx_voter_id').on(table.voterId)],
 )
+
+export const voter = sqliteTable('voter', {
+  id: text('id').primaryKey(),
+  createdAt: integer('created_at', { mode: 'timestamp' })
+    .$defaultFn(() => new Date())
+    .notNull(),
+  updatedAt: integer('updated_at', { mode: 'timestamp' })
+    .$defaultFn(() => new Date())
+    .notNull(),
+})
 
 export const functionaryRelation = relations(functionary, ({ many }) => ({
   ratings: many(rating),
@@ -46,4 +57,8 @@ export const ratingRelation = relations(rating, ({ one }) => ({
     fields: [rating.functionaryId],
     references: [functionary.id],
   }),
+}))
+
+export const voterRelation = relations(voter, ({ many }) => ({
+  ratings: many(rating),
 }))
