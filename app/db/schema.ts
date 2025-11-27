@@ -1,6 +1,6 @@
 import { createId } from '@paralleldrive/cuid2'
 import { relations } from 'drizzle-orm'
-import { index, integer, sqliteTable, text } from 'drizzle-orm/sqlite-core'
+import { index, integer, primaryKey, sqliteTable, text } from 'drizzle-orm/sqlite-core'
 
 export type Functionary = typeof functionary.$inferSelect
 export const functionary = sqliteTable('functionary', {
@@ -22,9 +22,6 @@ export type Rating = typeof rating.$inferSelect
 export const rating = sqliteTable(
   'rating',
   {
-    id: text('id')
-      .primaryKey()
-      .$defaultFn(() => createId()),
     functionaryId: text('functionary_id').references(() => functionary.id),
     voterId: text('voter_id').references(() => voter.id),
     rate: integer('rate').notNull(),
@@ -35,7 +32,11 @@ export const rating = sqliteTable(
       .$defaultFn(() => new Date())
       .notNull(),
   },
-  (table) => [index('idx_functionary_id').on(table.functionaryId), index('idx_voter_id').on(table.voterId)],
+  (table) => [
+    index('idx_functionary_id').on(table.functionaryId),
+    index('idx_voter_id').on(table.voterId),
+    primaryKey({ columns: [table.functionaryId, table.voterId] }),
+  ],
 )
 
 export const voter = sqliteTable('voter', {

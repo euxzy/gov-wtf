@@ -1,7 +1,7 @@
 {
   "version": "6",
   "dialect": "sqlite",
-  "id": "5f2c6909-35a1-4b75-819e-d78727f6ec5c",
+  "id": "332919eb-ab93-4604-938d-21e3cbc4c035",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "functionary": {
@@ -28,6 +28,13 @@
           "notNull": false,
           "autoincrement": false
         },
+        "position": {
+          "name": "position",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
         "created_at": {
           "name": "created_at",
           "type": "integer",
@@ -52,24 +59,90 @@
     "rating": {
       "name": "rating",
       "columns": {
-        "id": {
-          "name": "id",
-          "type": "text",
-          "primaryKey": true,
-          "notNull": true,
-          "autoincrement": false
-        },
         "functionary_id": {
           "name": "functionary_id",
           "type": "text",
           "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "voter_id": {
+          "name": "voter_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "rate": {
+          "name": "rate",
+          "type": "integer",
+          "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
-        "rating": {
-          "name": "rating",
+        "created_at": {
+          "name": "created_at",
           "type": "integer",
           "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        }
+      },
+      "indexes": {
+        "idx_functionary_id": {
+          "name": "idx_functionary_id",
+          "columns": ["functionary_id"],
+          "isUnique": false
+        },
+        "idx_voter_id": {
+          "name": "idx_voter_id",
+          "columns": ["voter_id"],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {
+        "rating_functionary_id_functionary_id_fk": {
+          "name": "rating_functionary_id_functionary_id_fk",
+          "tableFrom": "rating",
+          "tableTo": "functionary",
+          "columnsFrom": ["functionary_id"],
+          "columnsTo": ["id"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "rating_voter_id_voter_id_fk": {
+          "name": "rating_voter_id_voter_id_fk",
+          "tableFrom": "rating",
+          "tableTo": "voter",
+          "columnsFrom": ["voter_id"],
+          "columnsTo": ["id"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "rating_functionary_id_voter_id_pk": {
+          "columns": ["functionary_id", "voter_id"],
+          "name": "rating_functionary_id_voter_id_pk"
+        }
+      },
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    },
+    "voter": {
+      "name": "voter",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
           "notNull": true,
           "autoincrement": false
         },

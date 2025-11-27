@@ -1,9 +1,11 @@
+import { createId } from '@paralleldrive/cuid2'
 import { like, or } from 'drizzle-orm'
-import { useSearchParams } from 'react-router'
+import { data, useSearchParams } from 'react-router'
 import { Persons } from '~/components/sections/persons'
 import { Pagination } from '~/components/shared/pagination'
 import { db } from '~/db'
-import { functionary } from '~/db/schema'
+import { functionary, voter } from '~/db/schema'
+import { commitServiceSession, getServiceSession } from '~/sessions/services.server'
 import type { Route } from './+types'
 
 export function meta(_args: Route.MetaArgs) {
@@ -11,6 +13,18 @@ export function meta(_args: Route.MetaArgs) {
 }
 
 export const loader = async ({ request }: Route.LoaderArgs) => {
+  const session = await getServiceSession(request.headers.get('Cookie'))
+  if (!session.has('credentialId')) {
+    const credentialId = createId()
+    session.set('credentialId', credentialId)
+
+    try {
+      await db.insert(voter).values({ id: credentialId })
+    } catch (err) {
+      console.log(err)
+    }
+  }
+
   const url = new URL(request.url)
   const searchParams = url.searchParams
   const page = Number(searchParams.get('page') || 1)
@@ -27,10 +41,16 @@ export const loader = async ({ request }: Route.LoaderArgs) => {
       db.$count(functionary),
     ])
 
-    return { functionaries, functionaryCount, page, totalPage: Math.ceil(functionaryCount / 8) }
+    return data(
+      { functionaries, functionaryCount, page, totalPage: Math.ceil(functionaryCount / 8) },
+      { headers: { 'Set-Cookie': await commitServiceSession(session) } },
+    )
   } catch (err) {
     console.error(err)
-    return { functionaries: [], functionaryCount: 0, page, totalPage: 1 }
+    return data(
+      { functionaries: [], functionaryCount: 0, page, totalPage: 1 },
+      { headers: { 'Set-Cookie': await commitServiceSession(session) } },
+    )
   }
 }
 
