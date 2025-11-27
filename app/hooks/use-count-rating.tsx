@@ -20,7 +20,7 @@ export const useCountRating = () => {
 
   const rating = useMemo(() => {
     const total = ratings.reduce((acc, rating) => acc + rating.rate, 0)
-    return total === 0 ? 0 : total / ratings.length
+    return total === 0 ? 0 : (total / ratings.length).toFixed(1)
   }, [ratings, voters])
 
   return [rating, voters, setRatings] as const
