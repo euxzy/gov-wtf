@@ -32,12 +32,12 @@ export const loader = async ({ request }: Route.LoaderArgs) => {
 
   try {
     const [functionaries, functionaryCount] = await Promise.all([
-      db
-        .select()
-        .from(functionary)
-        .limit(8)
-        .offset((page - 1) * 8)
-        .where(or(like(functionary.name, `%${q}%`), like(functionary.position, `%${q}%`))),
+      db.query.functionary.findMany({
+        limit: 8,
+        offset: (page - 1) * 8,
+        where: or(like(functionary.name, `%${q}%`), like(functionary.position, `%${q}%`)),
+        with: { ratings: true },
+      }),
       db.$count(functionary),
     ])
 

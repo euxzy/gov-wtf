@@ -1,7 +1,8 @@
-import { isRouteErrorResponse, Links, Meta, Outlet, Scripts, ScrollRestoration } from 'react-router'
+import { isRouteErrorResponse, Links, Meta, Outlet, Scripts, ScrollRestoration, useRouteLoaderData } from 'react-router'
 
 import type { Route } from './+types/root'
 import './app.css'
+import { getServiceSession } from './sessions/services.server'
 
 export const links: Route.LinksFunction = () => [
   { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
@@ -33,6 +34,15 @@ export function Layout({ children }: { children: React.ReactNode }) {
     </html>
   )
 }
+
+export const loader = async ({ request }: Route.LoaderArgs) => {
+  const session = await getServiceSession(request.headers.get('Cookie'))
+  const credentialId = String(session.get('credentialId'))
+
+  return { credentialId }
+}
+
+export const useRootLoaderData = () => useRouteLoaderData<typeof loader>('root')
 
 export default function App() {
   return <Outlet />

@@ -1,20 +1,27 @@
 import { Icon } from '@iconify/react'
-import { Rating, RatingButton } from '~/components/ui/rating'
+import { useEffect } from 'react'
 import { Separator } from '~/components/ui/separator'
-import type { Functionary } from '~/db/schema'
+import type { Functionary, Rating } from '~/db/schema'
+import { useCountRating } from '~/hooks/use-count-rating'
 import { cdnImg } from '~/lib/utils'
 
 interface PersonCardProps {
   id?: string
-  functionary: Functionary
+  functionary: Functionary & { ratings: Rating[] }
   onClick?: (el: HTMLDivElement) => void
 }
 
 export const PersonCard = ({
   id,
   onClick,
-  functionary: { name, photo, id: functionaryId, position, createdAt, updatedAt },
+  functionary: { name, photo, id: functionaryId, position, ratings, createdAt, updatedAt },
 }: PersonCardProps) => {
+  const [rating, voters, setRatings] = useCountRating()
+
+  useEffect(() => {
+    setRatings(ratings)
+  }, [ratings])
+
   return (
     <div
       id={id}
@@ -24,7 +31,8 @@ export const PersonCard = ({
       data-photo={photo}
       data-created-at={createdAt}
       data-updated-at={updatedAt}
-      className="border p-2 rounded-md md:p-4"
+      data-ratings={JSON.stringify(ratings)}
+      className="border p-2 rounded-md select-none cursor-pointer md:p-4"
       onClick={(e) => onClick?.(e.currentTarget)}
     >
       <div className="mb-3 relative">
@@ -36,25 +44,18 @@ export const PersonCard = ({
         <div className="absolute start-3 bottom-2 flex items-center gap-2 h-4">
           <div className="flex items-center text-yellow-300 gap-0.5 text-sm md:text-base">
             <Icon icon="material-symbols:star-rounded" />
-            <p>5</p>
+            <p>{rating}</p>
           </div>
 
           <Separator orientation="vertical" className="bg-foreground" />
 
-          <p className="text-xs md:text-sm font-medium">1.5K Voters</p>
+          <p className="text-xs md:text-sm font-medium">{voters} Voters</p>
         </div>
       </div>
 
       <div>
-        <h2 className="font-medium line-clamp-2 mb-2 md:mb-3 md:text-lg lg:mb-4">{name}</h2>
-
-        <div className="flex flex-col items-start gap-3">
-          <Rating defaultValue={0}>
-            {Array.from({ length: 5 }).map((_, index) => (
-              <RatingButton className="text-yellow-500" key={`${index + 0}`} />
-            ))}
-          </Rating>
-        </div>
+        <h2 className="font-medium line-clamp-2 mb-1 md:text-lg lg:text-xl">{name}</h2>
+        <p className="text-muted-foreground">{position}</p>
       </div>
     </div>
   )

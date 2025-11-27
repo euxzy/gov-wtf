@@ -2,7 +2,7 @@ import { useGSAP } from '@gsap/react'
 import { gsap } from 'gsap'
 import { Flip } from 'gsap/all'
 import { useMemo, useRef, useState } from 'react'
-import type { Functionary } from '~/db/schema'
+import type { Functionary, Rating } from '~/db/schema'
 import { cdnImg } from '~/lib/utils'
 import { PersonCard } from '../shared/card/person'
 import { DetailPerson } from './detail-person'
@@ -10,16 +10,19 @@ import { DetailPerson } from './detail-person'
 gsap.registerPlugin(Flip)
 
 type Props = {
-  functionaries: Functionary[]
+  functionaries: (Functionary & { ratings: Rating[] })[]
 }
 
 export const Persons = ({ functionaries }: Props) => {
   const containerRef = useRef<HTMLDivElement>(null)
   const detailContainerRef = useRef<HTMLDivElement>(null)
 
-  const [selectedFunctionary, setSelectedFunctionary] = useState<Functionary | null>(null)
+  const [selectedFunctionary, setSelectedFunctionary] = useState<(Functionary & { ratings: Rating[] }) | null>(null)
   const [active, setActive] = useState<HTMLDivElement | null>(null)
 
+  const detailContainer = useMemo(() => {
+    return detailContainerRef.current?.querySelector('#detail-container') as HTMLDivElement
+  }, [detailContainerRef.current])
   const detailImgContainer = useMemo(() => {
     return detailContainerRef.current?.querySelector('#detail-img-container') as HTMLDivElement
   }, [detailContainerRef.current])
@@ -53,6 +56,8 @@ export const Persons = ({ functionaries }: Props) => {
       }).to(detailContent, { opacity: 1 })
 
       detailImg.removeEventListener('load', onLoad)
+      detailContainer.classList.toggle('bg-background')
+      detailContainer.classList.toggle('border')
     }
 
     detailImg.addEventListener('load', onLoad)
@@ -67,6 +72,7 @@ export const Persons = ({ functionaries }: Props) => {
       position: String(el.dataset?.position),
       createdAt: new Date(String(el.dataset?.createdAt)),
       updatedAt: new Date(String(el.dataset?.updatedAt)),
+      ratings: JSON.parse(String(el.dataset?.ratings)),
     })
   })
 
@@ -87,10 +93,13 @@ export const Persons = ({ functionaries }: Props) => {
         stagger: { amount: 0.7, from: persons.indexOf(active), grid: 'auto' },
       })
 
+    detailContainer.classList.toggle('bg-background')
+    detailContainer.classList.toggle('border')
+
     Flip.from(state, {
       scale: true,
       duration: 0.5,
-      delay: 0.2,
+      delay: 0.1,
       onInterrupt: () => {
         tl.kill()
       },
