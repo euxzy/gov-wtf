@@ -1,9 +1,11 @@
 import { Icon } from '@iconify/react'
 import { forwardRef, useState } from 'react'
+import { Form } from 'react-router'
 import { Rating, RatingButton } from '~/components/ui/rating'
 import { Separator } from '~/components/ui/separator'
 import type { Functionary } from '~/db/schema'
 import { Button } from '../ui/button'
+import { Input } from '../ui/input'
 
 type DetailPersonProps = {
   functionary?: Functionary | null
@@ -48,9 +50,14 @@ export const DetailPerson = forwardRef<HTMLDivElement, DetailPersonProps>(({ fun
                   <RatingButton className="text-yellow-500" key={`${index + 0}`} />
                 ))}
               </Rating>
-              <Button type="button" variant="secondary" size="sm" className="px-5">
-                Vote
-              </Button>
+              <Form method="post" action="/api/vote">
+                <Input type="hidden" name="functionaryId" value={functionary?.id || ''} />
+                <Input type="hidden" name="rating" value={rating} />
+
+                <Button type="submit" variant="secondary" size="sm" className="px-5" disabled={!rating}>
+                  Vote
+                </Button>
+              </Form>
             </div>
           </div>
         </div>
