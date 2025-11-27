@@ -32,5 +32,5 @@ export const action = async ({ request }: Route.ActionArgs) => {
     console.log(err)
   }
 
-  return redirect('/')
+  return redirect(request.headers.get('referer') || '/')
 }

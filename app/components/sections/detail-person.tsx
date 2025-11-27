@@ -61,11 +61,19 @@ export const DetailPerson = forwardRef<HTMLDivElement, DetailPersonProps>(({ fun
                   <RatingButton className="text-yellow-500" key={`${index + 0}`} />
                 ))}
               </Rating>
-              <Form method="post" action="/api/vote">
+              <Form
+                method="post"
+                action="/api/vote"
+                onSubmit={() => {
+                  setTimeout(() => {
+                    onClose?.()
+                  }, 300)
+                }}
+              >
                 <Input type="hidden" name="functionaryId" value={functionary?.id || ''} />
                 <Input type="hidden" name="rating" value={rating} />
 
-                <Button type="submit" variant="secondary" size="sm" className="px-5" disabled={!rating}>
+                <Button type="submit" variant="secondary" className="px-8 cursor-pointer rounded-sm" disabled={!rating}>
                   Vote
                 </Button>
               </Form>
