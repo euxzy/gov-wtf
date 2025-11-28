@@ -2,7 +2,7 @@
   "lockfileVersion": 1,
   "workspaces": {
     "": {
-      "name": "kritik-pejabat",
+      "name": "gov-wtf",
       "dependencies": {
         "@gsap/react": "^2.1.2",
         "@libsql/client": "^0.15.15",
