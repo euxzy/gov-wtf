@@ -77,7 +77,7 @@ export const Persons = ({ functionaries }: Props) => {
   })
 
   const onCloseDetail = contextSafe(() => {
-    const persons = gsap.utils.toArray('#person')
+    const persons = gsap.utils.toArray('.person-item')
 
     gsap.set(detailContainerRef.current, { overflow: 'hidden' })
 
@@ -113,7 +113,7 @@ export const Persons = ({ functionaries }: Props) => {
     <div ref={containerRef}>
       <div className="grid gap-3 grid-cols-2 md:grid-cols-3 md:gap-4 lg:grid-cols-4">
         {functionaries.map((functionary) => (
-          <PersonCard key={functionary.id} id="person" functionary={functionary} onClick={onClickPerson} />
+          <PersonCard key={functionary.id} functionary={functionary} onClick={onClickPerson} />
         ))}
       </div>
 

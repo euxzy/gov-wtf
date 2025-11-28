@@ -6,13 +6,11 @@ import { useCountRating } from '~/hooks/use-count-rating'
 import { cdnImg } from '~/lib/utils'
 
 interface PersonCardProps {
-  id?: string
   functionary: Functionary & { ratings: Rating[] }
   onClick?: (el: HTMLDivElement) => void
 }
 
 export const PersonCard = ({
-  id,
   onClick,
   functionary: { name, photo, id: functionaryId, position, ratings, createdAt, updatedAt },
 }: PersonCardProps) => {
@@ -24,7 +22,6 @@ export const PersonCard = ({
 
   return (
     <div
-      id={id}
       data-functionary-id={functionaryId}
       data-position={position}
       data-name={name}
@@ -32,7 +29,7 @@ export const PersonCard = ({
       data-created-at={createdAt}
       data-updated-at={updatedAt}
       data-ratings={JSON.stringify(ratings)}
-      className="border p-2 rounded-md select-none cursor-pointer md:p-4"
+      className="person-item border p-2 rounded-md select-none cursor-pointer md:p-4"
       onClick={(e) => onClick?.(e.currentTarget)}
     >
       <div className="mb-3 relative">
