@@ -1,5 +1,5 @@
 import { createId } from '@paralleldrive/cuid2'
-import { like, or } from 'drizzle-orm'
+import { count, like, or } from 'drizzle-orm'
 import { data, useSearchParams } from 'react-router'
 import { Persons } from '~/components/sections/persons'
 import { Pagination } from '~/components/shared/pagination'
@@ -38,11 +38,14 @@ export const loader = async ({ request }: Route.LoaderArgs) => {
         where: or(like(functionary.name, `%${q}%`), like(functionary.position, `%${q}%`)),
         with: { ratings: true },
       }),
-      db.$count(functionary),
+      db
+        .select({ count: count() })
+        .from(functionary)
+        .where(or(like(functionary.name, `%${q}%`), like(functionary.position, `%${q}%`))),
     ])
 
     return data(
-      { functionaries, functionaryCount, page, totalPage: Math.ceil(functionaryCount / 8) },
+      { functionaries, functionaryCount, page, totalPage: Math.ceil(functionaryCount[0].count / 8) },
       { headers: { 'Set-Cookie': await commitServiceSession(session) } },
     )
   } catch (err) {

@@ -46,11 +46,13 @@ export const Pagination = ({ page, totalPage, onChangePage }: Props) => {
             <PaginationEllipsis />
           </PaginationItem>
         )}
-        <PaginationItem onClick={() => onChangePage(totalPage)}>
-          <PaginationLink isActive={page === totalPage} className="cursor-pointer">
-            {totalPage}
-          </PaginationLink>
-        </PaginationItem>
+        {totalPage > 1 && (
+          <PaginationItem onClick={() => onChangePage(totalPage)}>
+            <PaginationLink isActive={page === totalPage} className="cursor-pointer">
+              {totalPage}
+            </PaginationLink>
+          </PaginationItem>
+        )}
 
         <PaginationItem onClick={() => onChangePage(page + 1)}>
           <PaginationNext className="cursor-pointer" />
